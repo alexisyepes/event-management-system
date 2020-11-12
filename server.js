@@ -36,20 +36,13 @@ app.use("/schedule", calendarEvents);
 app.use("/guests", guests);
 app.use(routes);
 
-// Send every request to the React app
-// Define any API routes before this runs
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
-
 // Connect to the Mongo DB
 mongoose.connect(
   `mongodb+srv://event_management_app:${process.env.MONGO_ATLAS}@cluster0.taku8.mongodb.net/event_management_app?retryWrites=true&w=majority`,
-  {
-    useNewUrlParser: true,
-  },
+
   {
     useUnifiedTopology: true,
+    useNewUrlParser: true,
   }
 );
 
