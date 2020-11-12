@@ -10,6 +10,7 @@ const routes = require("./routes");
 const usersRouter = require("./routes/api/users");
 const calendarEvents = require("./routes/api/calendarEvents");
 const guests = require("./routes/api/guests");
+const path = require("path");
 
 app.use(cors());
 // Passport Config
@@ -34,6 +35,12 @@ app.use("/auth", usersRouter);
 app.use("/schedule", calendarEvents);
 app.use("/guests", guests);
 app.use(routes);
+
+// Send every request to the React app
+// Define any API routes before this runs
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
 
 // Connect to the Mongo DB
 mongoose.connect(
