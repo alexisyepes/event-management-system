@@ -1,6 +1,9 @@
 # Event Management System
 
 Link to deployed app on heroku: https://alexis-event-handler.herokuapp.com/ <br><br>
+
+Note: The app is hosted in Heroku using the Free Dynos; therefore, it might take a few seconds to wake up. Once it loads, it will run fast and smoothly.
+
 Credentials to test the app: <br>
 email: alexfullstackdev@gmail.com <br>
 password: 123456
@@ -48,6 +51,9 @@ Or you can also create an account easily.
 - MongoDb Atlas
 
 Link to deployed app on heroku: https://alexis-event-handler.herokuapp.com/ <br><br>
+
+Note: The app is hosted in Heroku using the Free Dynos; therefore, it might take a few seconds to wake up. Once it loads, it will run fast and smoothly.
+
 Credentials to test the app: <br>
 email: alexfullstackdev@gmail.com <br>
 password: 123456
