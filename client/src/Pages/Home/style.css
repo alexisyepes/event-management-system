@@ -1,0 +1,85 @@
+.homeMainBox {
+  background: rgba(221, 232, 240, 0.801);
+  margin-top: 20px;
+  margin-bottom: 100px;
+}
+
+.homeButtons {
+  margin: 10px;
+  color: rgb(252, 247, 247);
+  text-shadow: -1px 0 rgb(8, 8, 8), 0 1px rgb(7, 7, 7), 1px 0 rgb(10, 10, 10),
+    0 -1px rgb(0, 0, 0);
+}
+
+.calendarHomeImg {
+  width: 600px;
+  padding: 40px 20px 40px 20px;
+}
+
+.clockIcon {
+  font-size: 60px;
+}
+
+.homeParagraph {
+  font-size: 20px;
+  text-align: justify;
+  padding: 10px;
+}
+
+@media (min-width: 360px) and (max-width: 410px) {
+  .wrapperHome {
+    padding: 0;
+  }
+
+  .homeContainer {
+    margin-bottom: 80px;
+  }
+
+  .textBoxHome {
+    grid-column: 1;
+    grid-row: 1;
+    object-fit: cover;
+    width: 100%;
+    max-height: 100%;
+  }
+
+  .calendarHomeImg {
+    width: 260px;
+    padding: 0 0 20px 0;
+    margin-top: 30px;
+  }
+
+  .homeMainBox {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homeContainer {
+    margin-top: 130px;
+  }
+
+  .textBoxHome {
+    object-fit: cover;
+    width: 100%;
+    max-height: 100%;
+  }
+
+  .homeTextInParagraph {
+    display: block;
+  }
+
+  .calendarHomeImg {
+    max-width: 400px;
+  }
+
+  .homeMainBox {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .homeTitleWelcome {
+    display: block;
+  }
+}

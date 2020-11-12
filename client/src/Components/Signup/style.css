@@ -1,0 +1,80 @@
+.signupPage {
+	margin-top: 80px;
+	margin-bottom: 80px;
+}
+
+.instructionsBoxSignup {
+	background: rgba(221, 232, 240, 0.801);
+	border: 1px solid #1d2227;
+	padding: 30px;
+	border-radius: 15px;
+	width: 80%;
+}
+
+.signupForm {
+	background: rgba(221, 232, 240, 0.801);
+	border: 1px solid #1d2227;
+	padding: 30px;
+	width: 88%;
+	border-radius: 15px;
+}
+
+.instructionsSignupParagraph {
+	font-size: 20px;
+	text-align: justify;
+}
+
+.signupTitle {
+	background: rgba(221, 232, 240, 0.801);
+	text-shadow: -1px 0 rgb(252, 250, 250), 0 3px rgb(248, 246, 246),
+		3px 0 rgb(247, 244, 244), 0 -1px rgb(255, 253, 253);
+	padding: 20px;
+	margin-bottom: 20px;
+	border: 2px solid #1d2227;
+	border-radius: 15px;
+}
+
+.instructionsSignup {
+	background: rgba(221, 232, 240, 0.801);
+	padding: 30px;
+	border: 3px solid #1d2227;
+	border-radius: 15px;
+}
+
+@media (max-width: 360px) {
+	.signupPage {
+		margin-top: 10px;
+	}
+
+	.signupTitleInSignup {
+		font-size: 23px;
+		margin-top: 5px;
+	}
+
+	.instructionsBoxSignup {
+		border: none;
+		padding: 30px;
+		border-radius: 15px;
+		width: 100%;
+	}
+
+	.signupTitle {
+		border: none;
+		margin-top: 60px;
+	}
+
+	.instructionsSignupParagraph {
+		font-size: 18px;
+	}
+
+	.calendarImageSignup {
+		width: 200px;
+	}
+
+	.signupForm {
+		margin-top: 15px;
+		border: none;
+		padding: 10px;
+		width: 100%;
+	}
+}
