@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
@@ -20,7 +19,6 @@ class App extends Component {
             alt="logo"
             src="./Images/logoEventManagement.png"
           />
-          <Sidebar />
         </div>
         <Navbar />
         <div className="App">
@@ -35,9 +33,9 @@ class App extends Component {
             Alexis Yepes Sanabria 2019 ©{" "}
             <a
               target="blank"
-              href="https://github.com/alexisyepes/event-managament-system"
+              href="https://github.com/alexisyepes/event-management-system"
             >
-              Click for code reference
+              Click for code reference <i className="fab fa-github"></i>
             </a>
           </CardFooter>
         </div>

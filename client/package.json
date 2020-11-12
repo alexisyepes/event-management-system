@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3001/",
+  "secure": false,
   "dependencies": {
     "create-react-context": "^0.3.0",
     "material-design-icons": "^3.0.1",

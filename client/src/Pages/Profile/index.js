@@ -239,19 +239,21 @@ class index extends Component {
     window.location.href = "/profile";
   };
 
-  async handleDeleteEvent({ currentTarget }) {
+  handleDeleteEvent = async ({ currentTarget }) => {
     let _id = currentTarget.value;
     if (
       window.confirm(`Are you sure you wish to delete this Event permanently?`)
     ) {
       await API.deleteCalendarAdminEvent(_id)
-        .then(() => this.getAllEvents())
+        .then(() => {
+          window.location.reload();
+        })
+        // this.getAllEvents()})
         .catch((err) => console.log(err));
-      window.location.href = "/profile";
     }
-  }
+  };
 
-  async handleDeleteGuest({ currentTarget }) {
+  handleDeleteGuest = async ({ currentTarget }) => {
     let _id = currentTarget.value;
     if (
       window.confirm(`Are you sure you wish to delete this Guest permanently?`)
@@ -261,7 +263,7 @@ class index extends Component {
         .catch((err) => console.log(err));
       window.location.href = "/profile";
     }
-  }
+  };
 
   addGuestsToEventModal = (e) => {
     let idEvent = e.target.value;
@@ -280,6 +282,15 @@ class index extends Component {
       confirmed: this.state.guestConfirmed.value,
     };
     let _id = this.state.idEvent;
+
+    if (
+      !guestObj.name ||
+      !guestObj.phone ||
+      !guestObj.email ||
+      !guestObj.confirmed
+    ) {
+      return alert("All fields are mandatory!");
+    }
 
     API.addGuest(_id, guestObj)
       .then((res) => {
@@ -462,219 +473,127 @@ class index extends Component {
       events.map((event) => {
         return (
           <div className="mainBox" key={event._id}>
-            {/* Modal To Add Guests to Events */}
-            <div className="col-lg-12">
+            {/* events list card */}
+            <div className="card-body-profile">
+              <h3 className="eventDetailsText">
+                Description: <b>{event.title}</b>
+              </h3>
+              <ul className="datesText">
+                <li>
+                  Start Date / Time:{" "}
+                  {moment(event.start).format("YYYY-MMMM-DD ddd hh:mm A")}
+                </li>
+                <li>
+                  End Date / Time:{" "}
+                  {moment(event.end).format("YYYY-MMMM-DD ddd hh:mm A")}
+                </li>
+              </ul>
+
+              <div className="events-list-btns-wrapper">
+                <button
+                  className="events-list-btns events-list-btns__edit"
+                  onClick={this.editEventModalOpen}
+                  value={event._id}
+                >
+                  <i className="fas fa-tasks"></i> Edit
+                </button>
+                <button
+                  value={event._id}
+                  className="events-list-btns events-list-btns__delete"
+                  onClick={this.handleDeleteEvent}
+                >
+                  <i className="fas fa-trash"></i> Delete
+                </button>
+                <button
+                  className="events-list-btns events-list-btns__add-guest"
+                  onClick={this.addGuestsToEventModal}
+                  value={event._id}
+                >
+                  <i className="fas fa-user-plus"></i> Add Guests
+                </button>
+                <button
+                  className="events-list-btns events-list-btns__view-guests"
+                  onClick={this.viewGuestList}
+                  value={event._id}
+                >
+                  <i className="fas fa-glasses"></i> View Guests
+                </button>
+              </div>
+            </div>
+            {/* events list card */}
+
+            {/* Modal To Edit Events */}
+            <div>
               <Modal
                 className="modal-xl modalForMobile"
-                isOpen={this.state.modalToAddGuestsToEvents}
-                toggle={this.toggleModalToAddGuests}
+                isOpen={this.state.modalToEditEvent}
+                toggle={this.toggle}
               >
                 <ModalHeader className="modalToEdit" toggle={this.eventToEdit}>
                   <div>
                     <button
                       className="danger modalMsg"
-                      onClick={this.closeModalToAddGuest}
+                      onClick={this.closeModal}
                     >
                       Close
                     </button>
-                    <h4>Add a Guest to this Event</h4>
+                    <h4>Please confirm your event details </h4>
                   </div>
                 </ModalHeader>
                 <ModalBody className="modalToEdit">
-                  <Form onSubmit={this.onSubmitModalToAddGuests}>
+                  <Form onSubmit={this.onSubmitModalToEdit}>
                     <FormGroup>
-                      <label>Guest's Name:</label>
                       <Input
                         type="text"
-                        name="guestName"
-                        id="guestName"
-                        placeholder="Enter Guest Name"
+                        name="editTitle"
+                        id="editTitle"
+                        defaultValue={this.state.editTitle}
+                        placeholder="Please enter the event details"
                         onChange={this.onChangeModal}
                       />
-                      <label>Guest's Phone:</label>
+                      <label className="mt-3 ml-2">
+                        Event Start Date/Time (YYYY-MM-DD HH:MM:SS):
+                      </label>
                       <Input
                         type="text"
-                        name="guestPhone"
-                        id="guestPhone"
-                        placeholder="Enter Guest phone"
+                        name="editStart"
+                        id="editStart"
+                        defaultValue={this.state.editStart}
+                        placeholder="Please enter the start time details"
                         onChange={this.onChangeModal}
                       />
-
-                      <label>Guest's Email:</label>
+                      <label className="mt-3 ml-2">
+                        Event End Date/Time (YYYY-MM-DD HH:MM:SS):
+                      </label>
                       <Input
-                        type="email"
-                        name="guestEmail"
-                        id="guestEmail"
-                        placeholder="Enter Guest Email"
+                        type="text"
+                        name="editEnd"
+                        id="editEnd"
+                        defaultValue={this.state.editEnd}
+                        placeholder="Please enter the end time details"
                         onChange={this.onChangeModal}
-                      />
-                      <label>Confirm if this guest is attending:</label>
-                      <Select
-                        name="form-field-name"
-                        value={guestConfirmed}
-                        options={attendanceOptions}
-                        placeholder="Confirm Attendance"
-                        isSearchable={false}
-                        onChange={this.onSelectedChanged}
                       />
                       <Button
-                        onClick={this.onSubmitModalToAddGuests}
-                        value={event._id}
+                        onClick={this.submitEditEvent}
                         color="info"
                         style={{ marginTop: "1rem" }}
                         block
                       >
-                        Add Guest
+                        Submit Changes
                       </Button>
                     </FormGroup>
                   </Form>
+                  <button
+                    value={event.id}
+                    className="btn deleteButton btn-block text-light"
+                    onClick={this.handleDeleteEvent}
+                  >
+                    Delete Event
+                  </button>
                 </ModalBody>
               </Modal>
             </div>
-            {/* Modal to Add Guests to events ends here */}
-            {/* events list card */}
-            <div className="card-body">
-              <h3 className="eventDetailsText">
-                <b>{event.title}</b>
-              </h3>
-              <div className="row ">
-                <div className="col-md-12">
-                  <ul className="datesText">
-                    <li>
-                      Start Date / Time:{" "}
-                      {moment(event.start).format("YYYY-MMMM-DD ddd hh:mm A")}
-                    </li>
-                    <li>
-                      End Date / Time:{" "}
-                      {moment(event.end).format("YYYY-MMMM-DD ddd hh:mm A")}
-                    </li>
-                  </ul>
-                </div>
-                <div className="col-md-12">
-                  <div className="row">
-                    <button
-                      className="col-sm-3 editEventList"
-                      onClick={this.editEventModalOpen}
-                      value={event._id}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      value={event._id}
-                      className="col-sm-3 deleteBtnEvent"
-                      onClick={this.handleDeleteEvent}
-                      color="danger"
-                      style={{ marginTop: "1rem" }}
-                    >
-                      Delete
-                    </button>
-                    <div className="row"></div>
-                    <button
-                      className="col-sm-3 addGuestsEventList"
-                      onClick={this.addGuestsToEventModal}
-                      value={event._id}
-                    >
-                      Add Guests
-                    </button>
-                    <button
-                      className="col-sm-3 viewGuestsEventList"
-                      onClick={this.viewGuestList}
-                      value={event._id}
-                    >
-                      View Guests
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {/* events list card */}
-              {/* Modal to view Guest List */}
-              <div>
-                <Modal
-                  className="modal-xl modalForMobile"
-                  isOpen={this.state.modalToViewGuestList}
-                  toggle={this.toggleModalToViewGuestList}
-                >
-                  <ModalHeader
-                    className="modalToEdit"
-                    toggle={this.modalToViewGuestList}
-                  >
-                    <div>
-                      <button
-                        className="danger modalMsg"
-                        onClick={this.closeModalToViewGuestList}
-                      >
-                        Close
-                      </button>
-                      <h4 className="guestListTitleModal">Guests List</h4>
-                    </div>
-                  </ModalHeader>
-                  <ModalBody className="modalToEdit guestListModalMobile">
-                    {guestList}
-                  </ModalBody>
-                </Modal>
-              </div>
-              {/* Modal to edit Guests */}
-              <div>
-                <Modal
-                  className="modal-xl modalForMobile"
-                  isOpen={this.state.modalToEditGuest}
-                  toggle={this.toggleModalToEditGuest}
-                >
-                  <ModalHeader
-                    className="modalToEdit"
-                    toggle={this.modalToEditGuest}
-                  >
-                    <div>
-                      <button
-                        className="danger modalMsg"
-                        onClick={this.closeModalToEditGuest}
-                      >
-                        Close
-                      </button>
-                      <h4 className="guestListTitleModal">
-                        Guest Info to Edit
-                      </h4>
-                    </div>
-                  </ModalHeader>
-                  <ModalBody className="modalToEdit">
-                    <Form onSubmit={this.submitEditGuest}>
-                      <FormGroup>
-                        <Input
-                          onChange={this.onChangeModal}
-                          name="guestNameToEdit"
-                          defaultValue={this.state.guestNameToEdit}
-                        />
-                        <Input
-                          onChange={this.onChangeModal}
-                          name="guestPhoneToEdit"
-                          defaultValue={this.state.guestPhoneToEdit}
-                        />
-                        <Input
-                          onChange={this.onChangeModal}
-                          name="guestEmailToEdit"
-                          defaultValue={this.state.guestEmailToEdit}
-                        />
-                        <label>
-                          Is {this.state.guestNameToEdit} attending?
-                        </label>
-                        <Select
-                          name="form-field-name"
-                          value={guestConfirmedToEdit}
-                          options={attendanceOptions}
-                          placeholder={guestConfirmedToEdit}
-                          isSearchable={false}
-                          onChange={this.onSelectedChangedEdit}
-                        />
-                      </FormGroup>
-                      <Button onClick={this.submitEditGuest}>
-                        Submit Changes
-                      </Button>
-                    </Form>
-                  </ModalBody>
-                </Modal>
-              </div>
-              {/* Modal to edit guests */}
-            </div>
+            {/* Modal to edit events ends here */}
           </div>
         );
       })
@@ -685,22 +604,20 @@ class index extends Component {
     );
     return (
       <div className="container profileMainContainer">
-        <div className=" profileTitleSection">
-          <h4 className="profilePageMainTitle">
+        <div className="row">
+          <h4 className="col-lg-12 profilePageMainTitle">
             Welcome to your Personal Event Management System{" "}
             {this.state.firstName}
           </h4>
         </div>
         <hr style={{ background: "white" }}></hr>
-        {/* <Button id="buttonToSeeCalendarMobile">
-          <a style={{ color: "white" }} href="#calendarBox">
-            See Calendar{" "}
-          </a>
-        </Button> */}
+
         <div className="row profileContainer">
           <div className="col-md-12 listOfGuestsToInvite">
-            <h4 style={{ textAlign: "center" }}>Events List</h4>
-            <ol>{eventsList}</ol>
+            <h4 style={{ textAlign: "center", marginTop: "5px" }}>
+              Events List
+            </h4>
+            {eventsList}
           </div>
           <div id="calendarBox" className="col-md-12 calendarBox">
             <CalendarAdmin
@@ -708,72 +625,160 @@ class index extends Component {
               idForUserEvents={user_id}
             />
           </div>
-          {/* Modal To Edit Events */}
+        </div>
+
+        {/* Modal To Add Guests to Events */}
+        <div className="col-lg-12">
+          <Modal
+            className="modal-xl modalForMobile"
+            isOpen={this.state.modalToAddGuestsToEvents}
+            toggle={this.toggleModalToAddGuests}
+          >
+            <ModalHeader className="modalToEdit" toggle={this.eventToEdit}>
+              <div>
+                <button
+                  className="danger modalMsg"
+                  onClick={this.closeModalToAddGuest}
+                >
+                  Close
+                </button>
+                <h4>Add a Guest to this Event</h4>
+              </div>
+            </ModalHeader>
+            <ModalBody className="modalToEdit">
+              <Form onSubmit={this.onSubmitModalToAddGuests}>
+                <FormGroup>
+                  <label>Guest's Name:</label>
+                  <Input
+                    type="text"
+                    name="guestName"
+                    id="guestName"
+                    placeholder="Enter Guest Name"
+                    onChange={this.onChangeModal}
+                  />
+                  <label className="mt-3 ml-2">Guest's Phone:</label>
+                  <Input
+                    type="text"
+                    name="guestPhone"
+                    id="guestPhone"
+                    placeholder="Enter Guest phone"
+                    onChange={this.onChangeModal}
+                  />
+
+                  <label className="mt-3 ml-2">Guest's Email:</label>
+                  <Input
+                    type="email"
+                    name="guestEmail"
+                    id="guestEmail"
+                    placeholder="Enter Guest Email"
+                    onChange={this.onChangeModal}
+                  />
+                  <label className="mt-3 ml-2">
+                    Confirm if this guest is attending:
+                  </label>
+                  <Select
+                    name="form-field-name"
+                    value={guestConfirmed}
+                    options={attendanceOptions}
+                    placeholder="Confirm Attendance"
+                    isSearchable={false}
+                    onChange={this.onSelectedChanged}
+                  />
+                  <Button
+                    onClick={this.onSubmitModalToAddGuests}
+                    value={event._id}
+                    color="info"
+                    style={{ marginTop: "1rem" }}
+                    block
+                  >
+                    Add Guest
+                  </Button>
+                </FormGroup>
+              </Form>
+            </ModalBody>
+          </Modal>
+
+          {/* Modal to view Guest List */}
           <div>
             <Modal
               className="modal-xl modalForMobile"
-              isOpen={this.state.modalToEditEvent}
-              toggle={this.toggle}
+              isOpen={this.state.modalToViewGuestList}
+              toggle={this.toggleModalToViewGuestList}
             >
-              <ModalHeader className="modalToEdit" toggle={this.eventToEdit}>
+              <ModalHeader
+                className="modalToEdit"
+                toggle={this.modalToViewGuestList}
+              >
                 <div>
-                  <button className="danger modalMsg" onClick={this.closeModal}>
+                  <button
+                    className="danger modalMsg"
+                    onClick={this.closeModalToViewGuestList}
+                  >
                     Close
                   </button>
-                  <h4>Please confirm your event details </h4>
+                  <h4 className="guestListTitleModal">Guests List</h4>
                 </div>
               </ModalHeader>
-              <ModalBody className="modalToEdit">
-                <Form onSubmit={this.onSubmitModalToEdit}>
-                  <FormGroup>
-                    <Input
-                      type="text"
-                      name="editTitle"
-                      id="editTitle"
-                      defaultValue={this.state.editTitle}
-                      placeholder="Please enter the event details"
-                      onChange={this.onChangeModal}
-                    />
-                    <label>Event Start Date/Time (YYYY-MM-DD HH:MM:SS):</label>
-                    <Input
-                      type="text"
-                      name="editStart"
-                      id="editStart"
-                      defaultValue={this.state.editStart}
-                      placeholder="Please enter the start time details"
-                      onChange={this.onChangeModal}
-                    />
-                    <label>Event End Date/Time (YYYY-MM-DD HH:MM:SS):</label>
-                    <Input
-                      type="text"
-                      name="editEnd"
-                      id="editEnd"
-                      defaultValue={this.state.editEnd}
-                      placeholder="Please enter the end time details"
-                      onChange={this.onChangeModal}
-                    />
-                    <Button
-                      onClick={this.submitEditEvent}
-                      color="info"
-                      style={{ marginTop: "1rem" }}
-                      block
-                    >
-                      Submit Changes
-                    </Button>
-                  </FormGroup>
-                </Form>
-                <button
-                  className="btn deleteButton btn-block"
-                  onClick={() => {
-                    this.handleDeleteEvent(this.state.eventToEdit.id);
-                  }}
-                >
-                  Delete Event
-                </button>
+              <ModalBody className="modalToEdit guestListModalMobile">
+                {guestList}
               </ModalBody>
             </Modal>
           </div>
-          {/* Modal to edit events ends here */}
+          {/* Modal to edit Guests */}
+          <div>
+            <Modal
+              className="modal-xl modalForMobile"
+              isOpen={this.state.modalToEditGuest}
+              toggle={this.toggleModalToEditGuest}
+            >
+              <ModalHeader
+                className="modalToEdit"
+                toggle={this.modalToEditGuest}
+              >
+                <div>
+                  <button
+                    className="danger modalMsg"
+                    onClick={this.closeModalToEditGuest}
+                  >
+                    Close
+                  </button>
+                  <h4 className="guestListTitleModal">Guest Info to Edit</h4>
+                </div>
+              </ModalHeader>
+              <ModalBody className="modalToEdit">
+                <Form onSubmit={this.submitEditGuest}>
+                  <FormGroup>
+                    <Input
+                      onChange={this.onChangeModal}
+                      name="guestNameToEdit"
+                      defaultValue={this.state.guestNameToEdit}
+                    />
+                    <Input
+                      onChange={this.onChangeModal}
+                      name="guestPhoneToEdit"
+                      defaultValue={this.state.guestPhoneToEdit}
+                    />
+                    <Input
+                      onChange={this.onChangeModal}
+                      name="guestEmailToEdit"
+                      defaultValue={this.state.guestEmailToEdit}
+                    />
+                    <label>Is {this.state.guestNameToEdit} attending?</label>
+                    <Select
+                      name="form-field-name"
+                      value={guestConfirmedToEdit}
+                      options={attendanceOptions}
+                      placeholder={guestConfirmedToEdit}
+                      isSearchable={false}
+                      onChange={this.onSelectedChangedEdit}
+                    />
+                  </FormGroup>
+                  <Button onClick={this.submitEditGuest}>Save Changes</Button>
+                </Form>
+              </ModalBody>
+            </Modal>
+          </div>
+          {/* Modal to edit guests */}
         </div>
       </div>
     );

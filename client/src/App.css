@@ -1,12 +1,12 @@
 .App {
   text-align: center;
   color: black;
-  font-family: "Monda", sans-serif;
+  /* font-family: "Monda", sans-serif; */
 }
 
 body {
   /* background-image: url("/Images/time-background.png"); */
-  /* background-image: url("./Images/time-bg.jpg"); */
+  background-image: url("https://res.cloudinary.com/amazing-pet-grooming/image/upload/v1605181039/varios/timebg_nw0roo.jpg");
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -18,23 +18,19 @@ body {
 
 .appHeader {
   background-color: rgb(5, 0, 0);
-  /* min-width: 1500px; */
-  /* margin-top: -10px; */
-  min-width: 100%;
-  height: 100px;
-  color: white;
 }
 
 .logo {
-  margin-left: 30%;
-  width: 600px;
-  margin-top: 30px;
+  width: 30%;
+  padding: 10px;
+  margin: 0 auto;
+  display: block;
 }
 
 .footer {
   background: black;
   color: rgb(67, 217, 255);
-  font-size: 18px;
+  font-size: 15px;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -42,38 +38,11 @@ body {
   text-align: center;
 }
 
-@media (max-width: 360px) {
-  .appHeader {
-    display: block !important;
-  }
-
+@media only screen and (min-device-width: 200px) and (max-device-width: 767px) {
   .logo {
-    width: 250px !important;
-  }
-}
-
-@media (max-width: 436px) {
-  .logo {
-    margin-left: -60px;
-    width: 250px !important;
-  }
-}
-
-@media (max-width: 562px) {
-  .logo {
-    max-width: 350px;
-  }
-}
-
-@media (max-width: 768px) {
-  .logo {
-    width: 450px;
-  }
-}
-
-@media (max-width: 991px) {
-  /* Styles */
-  .logo {
-    margin-left: 20%;
+    width: 60%;
+    padding: 10px;
+    margin: 0 auto;
+    display: block;
   }
 }

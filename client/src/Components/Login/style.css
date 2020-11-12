@@ -1,30 +1,35 @@
 .signinForm {
-	background: rgba(221, 232, 240, 0.801);
-	color: white;
-	border: 3px solid #1d2227;
-	border-radius: 15px;
-	margin: 20px;
-	padding: 30px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 40px;
-	width: 100%;
+  background: rgba(221, 232, 240, 0.801);
+  color: white;
+  margin: 20px;
+  padding: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  width: 100%;
 }
 
 .formBox {
-	background: rgba(221, 232, 240, 0.89);
-	border: 10px double #1e2022;
-	margin-top: 60px;
-	padding: 20px;
+  border-radius: 5px;
+  background: rgb(255, 255, 255);
+  margin-top: 60px;
+  padding: 20px;
+  -webkit-filter: drop-shadow(0px 5px 5px #222222);
+  filter: drop-shadow(0px 5px 5px #222222);
+  width: 60%;
 }
 
 .signinPage {
-	margin-top: 60px;
-	margin-bottom: 80px;
+  margin-top: 60px;
+  margin-bottom: 80px;
 }
 
-@media (max-width: 360px) {
-	.signinPage {
-		margin-top: 10px;
-	}
+@media only screen and (min-device-width: 200px) and (max-device-width: 767px) {
+  .signinPage {
+    margin-top: 10px;
+  }
+
+  .formBox {
+    width: 90%;
+  }
 }

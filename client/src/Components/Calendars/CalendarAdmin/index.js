@@ -133,8 +133,7 @@ class CalendarAdmin extends React.Component {
 
     API.addAppointmentAdmin(_id, obj)
 
-      .then((data) => console.log(data))
-      .then(
+      .then(() =>
         this.setState({
           slotEventStart: "",
           slotEventEnd: "",
@@ -175,21 +174,27 @@ class CalendarAdmin extends React.Component {
     window.location.href = "/profile";
   };
 
-  handleDeleteEvent = async () => {
-    let _id = this.state.eventId;
+  handleDeleteEvent = async (e) => {
+    e.preventDefault();
+    const _id = this.state.eventId;
     if (
       window.confirm(`Are you sure you wish to delete this Event permanently?`)
     ) {
       await API.deleteCalendarAdminEvent(_id)
-        .then(() => this.getAppointmentsCalendarAdmin())
+        .then(() => {
+          this.getAppointmentsCalendarAdmin();
+          this.props.getAllEvents();
+          this.setState({
+            modalToEditEvent: false,
+          });
+        })
         .catch((err) => console.log(err));
-      window.location.href = "/profile";
+      // window.location.href = "/profile";
     }
   };
 
   //Slot event on Calendar opens modal
   handleSelect = (slot) => {
-    console.log(slot);
     let slotEvent = {
       start: this.convertDate(slot.start),
       end: this.convertDate(slot.end),
@@ -253,7 +258,6 @@ class CalendarAdmin extends React.Component {
           editStart: this.convertDate(res.data.start),
           editEnd: this.convertDate(res.data.end),
         });
-        console.log(this.state.editEnd);
         return Promise.resolve(res);
       })
       .then(
@@ -303,6 +307,32 @@ class CalendarAdmin extends React.Component {
 
     return (
       <div className="row">
+        {/* Calendar */}
+        <div className="col-md-12 mainCalendarComponentWrapper pt-3">
+          <h4 className="calendarMainTitle">
+            {this.state.userCalendarName}'s Calendar
+          </h4>
+          <hr style={{ background: "white" }}></hr>
+          <Calendar
+            className="calendarComponents"
+            components={components}
+            events={cal_eventsAdmin}
+            onSelectSlot={this.handleSelect}
+            step={15}
+            selectable="ignoreEvents"
+            eventPropGetter={this.eventStyleGetter}
+            timeslots={4}
+            defaultView="day"
+            views={["day", "agenda"]}
+            defaultDate={new Date()}
+            localizer={localizer}
+            min={new Date(2019, 10, 0, 5, 0, 0)}
+            max={new Date(2019, 10, 0, 23, 0, 0)}
+            onSelectEvent={this.handleEventGetter}
+          />
+        </div>
+        {/* Calendar Ends*/}
+
         {/* Modal To add Event to Calendar */}
         <div>
           <Modal
@@ -331,7 +361,7 @@ class CalendarAdmin extends React.Component {
                     isSearchable={false}
                     onChange={this.onSelectedChanged}
                   />
-                  <label className="mt-3">Event Details:</label>
+                  <label className="mt-3 ml-2">Event Details:</label>
 
                   <Input
                     type="text"
@@ -342,13 +372,13 @@ class CalendarAdmin extends React.Component {
                     onChange={this.onChangeModal}
                   />
 
-                  <p className="time-on-modal">
+                  <p className="time-on-modal mt-3 ml-2">
                     Starts:
                     {moment(this.state.slotEvent.start).format(
                       "dddd, MMMM Do YYYY, h:mm a"
                     )}
                   </p>
-                  <p className="time-on-modal">
+                  <p className="time-on-modal mt-3 ml-2">
                     Ends:
                     {moment(this.state.slotEvent.end).format(
                       "dddd, MMMM Do YYYY, h:mm a"
@@ -384,7 +414,7 @@ class CalendarAdmin extends React.Component {
             <ModalBody className="modalToEdit">
               <Form onSubmit={this.onSubmitModalToEdit}>
                 <FormGroup>
-                  <label>Appointment details:</label>
+                  <label>Event details:</label>
 
                   <Input
                     type="text"
@@ -394,7 +424,9 @@ class CalendarAdmin extends React.Component {
                     placeholder="Please enter the event details"
                     onChange={this.onChangeModal}
                   />
-                  <label>Event Start Date/Time (YYYY-MM-DD HH:MM:SS):</label>
+                  <label className="mt-3 ml-2">
+                    Event Start Date/Time (YYYY-MM-DD HH:MM:SS):
+                  </label>
 
                   <Input
                     type="text"
@@ -404,7 +436,9 @@ class CalendarAdmin extends React.Component {
                     placeholder="Please enter the start time details"
                     onChange={this.onChangeModal}
                   />
-                  <label>Event End Date/Time (YYYY-MM-DD HH:MM:SS):</label>
+                  <label className="mt-3 ml-2">
+                    Event End Date/Time (YYYY-MM-DD HH:MM:SS):
+                  </label>
 
                   <Input
                     type="text"
@@ -422,12 +456,8 @@ class CalendarAdmin extends React.Component {
               </Form>
               <button
                 className="deleteBtnEvent"
-                onClick={() => {
-                  this.handleDeleteEvent(this.state.eventToEdit.id);
-                }}
-                color="danger"
+                onClick={this.handleDeleteEvent}
                 style={{ marginTop: "1rem" }}
-                block
               >
                 Delete Event
               </button>
@@ -435,32 +465,6 @@ class CalendarAdmin extends React.Component {
           </Modal>
         </div>
         {/* Modal to edit events ends here */}
-
-        {/* Calendar */}
-        <div className="col-md-12 mainCalendarComponentWrapper">
-          <h4 className="calendarMainTitle">
-            {this.state.userCalendarName}'s Calendar
-          </h4>
-          <hr style={{ background: "white" }}></hr>
-          <Calendar
-            className="calendarComponent"
-            components={components}
-            events={cal_eventsAdmin}
-            onSelectSlot={this.handleSelect}
-            step={15}
-            selectable="ignoreEvents"
-            eventPropGetter={this.eventStyleGetter}
-            timeslots={4}
-            defaultView="day"
-            views={["day", "agenda"]}
-            defaultDate={new Date()}
-            localizer={localizer}
-            min={new Date(2019, 10, 0, 5, 0, 0)}
-            max={new Date(2019, 10, 0, 23, 0, 0)}
-            onSelectEvent={this.handleEventGetter}
-          />
-        </div>
-        {/* Calendar Ends*/}
       </div>
     );
   }
